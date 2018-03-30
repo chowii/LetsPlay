@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Lets Pay</string>
+    <string name="endpoint">https://www.dropbox.com/s/tewg9b71x0wrou9/</string>
+</resources>
