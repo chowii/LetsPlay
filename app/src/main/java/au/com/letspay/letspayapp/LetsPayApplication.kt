@@ -8,8 +8,13 @@ import au.com.letspay.letspayapp.network.Constants
  */
 class LetsPayApplication: Application() {
 
+    companion object {
+        lateinit var context: LetsPayApplication
+    }
+
     override fun onCreate() {
         super.onCreate()
+        context = this
         Constants.init(this)
     }
 }

@@ -26,5 +26,4 @@
         android:textStyle="bold"
         tools:text="3 days ago" />
 
-
 </LinearLayout>

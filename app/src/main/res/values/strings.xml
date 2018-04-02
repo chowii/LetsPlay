@@ -3,4 +3,8 @@
     <string name="endpoint">https://www.dropbox.com/s/tewg9b71x0wrou9/</string>
     <string name="pending_transaction_text">PENDING:</string>
     <string name="pending_transaction_format">%s %s</string>
+    <string name="account_icon_content_description">Account Icon</string>
+    <string name="error_message">Error occurred. Please try again later</string>
+    <string name="available_balance_toolbar_title">Available Balance</string>
+    <string name="available_funds_toolbar_title">Available Funds</string>
 </resources>

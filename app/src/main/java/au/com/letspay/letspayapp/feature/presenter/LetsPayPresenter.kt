@@ -1,12 +1,12 @@
 package au.com.letspay.letspayapp.feature.presenter
 
-import android.util.Log
 import au.com.letspay.letspayapp.LetsPayContract
 import au.com.letspay.letspayapp.feature.model.BaseModel
 import au.com.letspay.letspayapp.feature.model.Header
 import au.com.letspay.letspayapp.feature.model.LetsPayModel
 import au.com.letspay.letspayapp.feature.model.UserTransaction
 import au.com.letspay.letspayapp.network.LetsPayService
+import au.com.letspay.letspayapp.util.durationFromNowAsString
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -39,13 +39,13 @@ class LetsPayPresenter(
                         },
                         {
                             view.hideLoading()
-                            Log.e("LOG_TAG---", it.message, it)
+                            view.showError(it)
                         }
                 )
     }
 
     private fun configureDataset(letsPayModel: LetsPayModel?) {
-        val tempSet = mutableListOf<BaseModel?>()
+        val tempSet = mutableListOf<UserTransaction>()
         val dataSet = mutableListOf<BaseModel?>()
         letsPayModel?.let {
             val sortedPending = it.pending.sortedBy { it.effectiveCalendar?.timeInMillis }
@@ -54,26 +54,34 @@ class LetsPayPresenter(
             tempSet.addAll(sortedTransaction)
         }
 
-        tempSet.filter { it is UserTransaction }
-                .map { it as UserTransaction }
-                .sortedByDescending { it.effectiveCalendar?.timeInMillis }
-                .forEach { userTransaction ->
-                    val header = Header("")
-                    header.header = userTransaction.displayableEffectiveDate.orEmpty()
-                    header.subheader = "Some days ago"
-                    val lastHeader = dataSet.filter { it is Header }
-                            .map { it as Header }
-                            .lastOrNull { it.header == userTransaction.displayableEffectiveDate }
-                    if (lastHeader == null) {
-                        dataSet.add(header)
-                    }
-                    dataSet.add(userTransaction)
-                }
+        tempSet.sortByDescending { it.effectiveCalendar?.timeInMillis }
+        tempSet.forEach { userTransaction ->
+            val header = Header("")
+            header.header = userTransaction.displayableEffectiveDate.orEmpty()
+            header.subheader = userTransaction.effectiveCalendar?.time?.durationFromNowAsString().orEmpty()
+            val lastHeader = dataSet.filter { it is Header }
+                    .map { it as Header }
+                    .lastOrNull { it.header == userTransaction.displayableEffectiveDate }
+            if (lastHeader == null) {
+                dataSet.add(header)
+            }
+            dataSet.add(userTransaction)
+        }
 
         view.updateDataset(dataSet)
     }
 
     override fun showAtm(atmId: String?) {
+        service.getDataset()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            it.atms.find { it.id == atmId }?.let { view.showMap(it) }
+                        },
+                        {
 
+                        }
+                )
     }
 }

@@ -1,5 +1,6 @@
 package au.com.letspay.letspayapp
 
+import au.com.letspay.letspayapp.feature.model.Atm
 import au.com.letspay.letspayapp.feature.model.BaseModel
 import au.com.letspay.letspayapp.feature.model.UserAccount
 
@@ -24,9 +25,13 @@ interface LetsPayContract {
 
         fun hideLoading()
 
+        fun showError(throwable: Throwable)
+
         fun updateAccountDetails(account: UserAccount)
 
         fun updateDataset(dataSet: MutableList<BaseModel?>)
+
+        fun showMap(atm: Atm)
 
     }
 

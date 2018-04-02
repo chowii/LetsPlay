@@ -1,8 +1,5 @@
 package au.com.letspay.letspayapp.feature.model
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
 import au.com.letspay.letspayapp.R
 import au.com.letspay.letspayapp.util.getCalendar
 import com.google.gson.annotations.SerializedName
@@ -39,27 +36,26 @@ data class UserAccount(
 
         @SerializedName("balance")
         val balance: Int
-) : BaseModel {
+) {
+    val displayableBalance: String
+        get() = NumberFormat.getCurrencyInstance(Locale.getDefault()).format(balance)
 
-    override val itemViewType: Int
-        get() = 0
+    val displayableFunds: String
+        get() = NumberFormat.getCurrencyInstance(Locale.getDefault()).format(available)
+
+
 }
 
-@Entity(tableName = "transaction")
 sealed class UserTransaction(
-        @PrimaryKey
         @SerializedName("id")
         val id: String? = null,
 
-        @ColumnInfo(name = "effectiveDate")
         @SerializedName("effectiveDate")
         val effectiveDate: String? = null,
 
-        @ColumnInfo(name = "amount")
         @SerializedName("amount")
         val amount: Float? = null,
 
-        @ColumnInfo(name = "atmid")
         @SerializedName("atmId")
         val atmId: String? = null
 
@@ -91,6 +87,12 @@ sealed class UserTransaction(
 
     val displayableAmount: String
         get() = NumberFormat.getCurrencyInstance(Locale.getDefault()).format(amount)
+
+    val displayableDuration: String
+    get() {
+
+        return ""
+    }
 
     override val itemViewType: Int
         get() = R.layout.item_transaction

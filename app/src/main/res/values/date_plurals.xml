@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <plurals name="minute">
+        <item quantity="one">%d Minute ago</item>
+        <item quantity="other">%d Minutes ago</item>
+    </plurals>
+
+    <plurals name="hour">
+        <item quantity="one">%d Hour ago</item>
+        <item quantity="other">%d Hours ago</item>
+    </plurals>
+
+    <plurals name="day">
+        <item quantity="one">Yesterday</item>
+        <item quantity="other">%d Days ago</item>
+    </plurals>
+
+    <plurals name="month">
+        <item quantity="one">%d Month ago</item>
+        <item quantity="other">%d Months ago</item>
+    </plurals>
+
+    <plurals name="year">
+        <item quantity="one">%d Year ago</item>
+        <item quantity="other">%d Years ago</item>
+    </plurals>
+
+</resources>

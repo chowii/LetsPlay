@@ -53,6 +53,8 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="24dp"
                         android:textColor="@android:color/black"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
                         tools:text="Complete Access"
                         app:layout_constraintStart_toEndOf="@+id/imageView"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -74,6 +76,8 @@
                         android:layout_marginBottom="8dp"
                         android:layout_marginTop="8dp"
                         android:paddingStart="70dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
                         android:orientation="vertical"
                         android:background="@color/grey_background"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,7 +93,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/grey"
-                            tools:text="Available Funds" />
+                            android:text="@string/available_funds_toolbar_title" />
 
                         <TextView
                             android:id="@+id/available_balance_title_text_view"
@@ -97,7 +101,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/available_funds_title_text_view"
                             android:textColor="@color/grey"
-                            tools:text="Available Balance" />
+                            android:text="@string/available_balance_toolbar_title" />
 
                         <TextView
                             android:id="@+id/available_funds_amount_text_view"
@@ -118,6 +122,7 @@
                             android:textColor="@color/grey"
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="15dp"
+                            android:textSize="15sp"
                             tools:text="$372.10" />
                     </RelativeLayout>
 
