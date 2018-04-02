@@ -6,13 +6,14 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.TextView
+import au.com.letspay.letspayapp.LetsPayApplication
 import au.com.letspay.letspayapp.LetsPayContract
 import au.com.letspay.letspayapp.R
 import au.com.letspay.letspayapp.feature.adapter.LetsPayAdapter
 import au.com.letspay.letspayapp.feature.model.BaseModel
 import au.com.letspay.letspayapp.feature.model.UserAccount
-import au.com.letspay.letspayapp.network.ApiClient
 import au.com.letspay.letspayapp.feature.presenter.LetsPayPresenter
+import au.com.letspay.letspayapp.network.ApiClient
 import butterknife.BindView
 import butterknife.ButterKnife
 
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity(), LetsPayContract.LetsPayInteractable {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
-        presenter = LetsPayPresenter(ApiClient.getService(), this)
+        presenter = LetsPayPresenter(ApiClient.getService(), this, LetsPayApplication.db.letsPayDao())
         presenter.startPresenting()
         swipeRefreshLayout.setOnRefreshListener { presenter.refreshDataset() }
     }

@@ -2,11 +2,13 @@ package au.com.letspay.letspayapp.feature.presenter
 
 import android.util.Log
 import au.com.letspay.letspayapp.LetsPayContract
+import au.com.letspay.letspayapp.database.LetsPlayDao
 import au.com.letspay.letspayapp.feature.model.BaseModel
 import au.com.letspay.letspayapp.feature.model.Header
 import au.com.letspay.letspayapp.feature.model.LetsPayModel
 import au.com.letspay.letspayapp.feature.model.UserTransaction
 import au.com.letspay.letspayapp.network.LetsPayService
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -15,7 +17,8 @@ import io.reactivex.schedulers.Schedulers
  */
 class LetsPayPresenter(
         private val service: LetsPayService,
-        private val view: LetsPayContract.LetsPayInteractable
+        private val view: LetsPayContract.LetsPayInteractable,
+        private val letsPayDao: LetsPlayDao
 ) : LetsPayContract.LetsPayPresentable {
 
     override fun startPresenting() {
@@ -35,6 +38,7 @@ class LetsPayPresenter(
                         {
                             view.updateAccountDetails(it.account)
                             configureDataset(it)
+
                             view.hideLoading()
                         },
                         {
@@ -45,7 +49,7 @@ class LetsPayPresenter(
     }
 
     private fun configureDataset(letsPayModel: LetsPayModel?) {
-        val tempSet = mutableListOf<BaseModel?>()
+        val tempSet = mutableListOf<UserTransaction>()
         val dataSet = mutableListOf<BaseModel?>()
         letsPayModel?.let {
             val sortedPending = it.pending.sortedBy { it.effectiveCalendar?.timeInMillis }
@@ -54,22 +58,32 @@ class LetsPayPresenter(
             tempSet.addAll(sortedTransaction)
         }
 
-        tempSet.filter { it is UserTransaction }
-                .map { it as UserTransaction }
-                .sortedByDescending { it.effectiveCalendar?.timeInMillis }
-                .forEach { userTransaction ->
-                    val header = Header("")
-                    header.header = userTransaction.displayableEffectiveDate.orEmpty()
-                    header.subheader = "Some days ago"
-                    val lastHeader = dataSet.filter { it is Header }
-                            .map { it as Header }
-                            .lastOrNull { it.header == userTransaction.displayableEffectiveDate }
-                    if (lastHeader == null) {
-                        dataSet.add(header)
-                    }
-                    dataSet.add(userTransaction)
-                }
+        tempSet.sortByDescending { it.effectiveCalendar?.timeInMillis }
 
+        tempSet.forEach { userTransaction ->
+            val header = Header("")
+            header.header = userTransaction.displayableEffectiveDate.orEmpty()
+            header.subheader = "Some days ago"
+            val lastHeader = dataSet.filter { it is Header }
+                    .map { it as Header }
+                    .lastOrNull { it.header == userTransaction.displayableEffectiveDate }
+            if (lastHeader == null) {
+                dataSet.add(header)
+            }
+            dataSet.add(userTransaction)
+        }
+        Observable.create<Long> { emitter ->
+            tempSet.forEach { emitter.onNext(letsPayDao.insertOne(it)) }
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            Log.d("LOG_TAG---", "configureDataset(): $it")
+                        },
+                        {
+                            Log.e("LOG_TAG---", "configureDataset(): ${it.message}", it)
+                        }
+                )
         view.updateDataset(dataSet)
     }
 

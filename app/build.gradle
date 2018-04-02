@@ -48,4 +48,12 @@ dependencies {
     //ButterKnife and KotterKnife
     implementation 'com.jakewharton:butterknife:8.8.1'
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    //Room
+    implementation "android.arch.persistence.room:runtime:1.0.0"
+    kapt "android.arch.persistence.room:compiler:1.0.0"
+
+    //Debug Database Tool
+    //https://github.com/amitshekhariitbhu/Android-Debug-Database
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.3'
 }
